@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      lang="en" xmlns:th="www.thymeLeaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default-layout}">
+<head>
+    <title>search</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/login.css}"/>
+
+</head>
+<div layout:fragment="main-content" class="container">
+    <div class="jumbotron mb-0 bg-white">
+        <h5 class="display-4">Welcome to mgm go!</h5>
+        <hr class="my-4">
+        <p>You can find events, places and anything in here.</p>
+        <div th:if="${not #lists.isEmpty(activities)}" th:each="item: ${activities}" class="activities">
+            <div class="activity-item">
+                <a th:href="@{/activity/{id}(id=${item.id})}" class="activity-name" th:text="${item.name}"></a>
+            </div>
+        </div>
+        <div class="activities" id="activities">
+            <div class="activity-item" id="activity-item">
+                <a class="activity-name" id="activity-name"></a>
+            </div>
+        </div>
+    </div>
+
+    <form th:action="@{/search}" method="get" class="col-12 col-sm-8 col-md-6 col-lg-4">
+
+        <div class="form-group">
+            <input type="text" name="searchInfor" id="searchInfor" placeholder="Search" required>
+            <button id="search" type="submit"><i class="fa fa-search"></i></button>
+        </div>
+
+    </form>
+</div>
+<th:block layout:fragment="custom-script">
+
+    <script>
+        $(document).ready(function () {
+            $("#searchInfor").on("input", function () {
+                // console.log( $("#searchInfor").val());
+                fetch("/api/search?searchInfo=" + $("#searchInfor").val())
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (myJson) {
+                       // $('#activity-name').html(myJson.name);
+                        console.log(myJson);
+                    });
+            })
+        });
+    </script>
+</th:block>
+
+</body>
+</html>
